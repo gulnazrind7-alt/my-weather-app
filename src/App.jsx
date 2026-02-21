@@ -13,7 +13,7 @@ import thunderIcon from "../src/assets/Thunderstorm.png";
 import snowIcon from "../src/assets/Snow.png";
 import mistIcon from "../src/assets/Mist.png";
 
-const API_KEY = "8c1be050bec29505280ce5296ac856cd";
+const API_KEY = import.meta.env.VITE_API_KEY;
 
 const App = () => {
   const [city, setCity] = useState("");
