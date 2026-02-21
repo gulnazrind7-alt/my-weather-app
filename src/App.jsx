@@ -1,17 +1,16 @@
 import React, { useState } from "react";
 
-// Icons for weather
-import searchIcon from "../src/assets/search-removebg-preview.png";
-import sunnyIcon from "../src/assets/Sunny.png";
-import Night_Storm_icon from "../src/assets/NightStorm.png"; 
-import NightClean_Icon from "../src/assets/Night_Clean.png";
-import clearIcon from "../src/assets/PartlyCloudy.png";
-import cloudsIcon from "../src/assets/cloudy-removebg-preview.png";
-import rainIcon from "../src/assets/Rain.png";
-import Heavy_Rain_Icon from "../src/assets/HeavyRain-removebg-preview.png";
-import thunderIcon from "../src/assets/Thunderstorm.png";
-import snowIcon from "../src/assets/Snow.png";
-import mistIcon from "../src/assets/Mist.png";
+import searchIcon from "./assets/search-removebg-preview.png";
+import sunnyIcon from "./assets/Sunny.png";
+import Night_Storm_icon from "./assets/NightStorm.png";
+import NightClean_Icon from "./assets/Night_Clean.png";
+import clearIcon from "./assets/PartlyCloudy.png";
+import cloudsIcon from "./assets/Cloudy-removebg-preview.png";
+import rainIcon from "./assets/Rain.png";
+import Heavy_Rain_Icon from "./assets/HeavyRain-removebg-preview.png";
+import thunderIcon from "./assets/Thunderstorm.png";
+import snowIcon from "./assets/Snow.png";
+import mistIcon from "./assets/Mist.png";
 
 const API_KEY = import.meta.env.VITE_API_KEY;
 
