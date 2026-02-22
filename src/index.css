@@ -148,4 +148,78 @@ h1 {
   width: 48px;
   margin: 0 auto;
 }
+.search-bar {
+  position: relative;
+}
 
+.search-bar {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 32px;
+}
+
+/* Input aur button wrapper */
+.search-bar input {
+  width: 300px;
+}
+
+/* Suggestions Dropdown */
+.suggestions {
+  position: absolute;
+  top: 100%;          /* input ke bilkul neeche */
+  left: 50%;
+  transform: translateX(-50%);
+  width: 300px;       /* input ke equal width */
+  margin-top: 8px;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+  padding: 6px 0;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* Scrollbar Styling */
+.suggestions::-webkit-scrollbar {
+  width: 6px;
+}
+
+.suggestions::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+
+/* Suggestion Item */
+.suggestion-item {
+  padding: 10px 16px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.suggestion-item:hover {
+  background: linear-gradient(to right, #3b82f6, #6366f1);
+  color: white;
+}
+
+/* Smooth Fade Animation */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -5px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+.city-name {
+  font-size: 22px;
+  font-weight: 600;
+  margin-top: 10px;
+  letter-spacing: 1px;
+}

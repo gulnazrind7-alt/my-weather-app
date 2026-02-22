@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 
 import searchIcon from "./assets/search-removebg-preview.png";
 import sunnyIcon from "./assets/Sunny.png";
@@ -15,11 +15,16 @@ import mistIcon from "./assets/Mist.png";
 const API_KEY = import.meta.env.VITE_API_KEY;
 
 const App = () => {
+  const searchRef = useRef(null);
   const [city, setCity] = useState("");
   const [weather, setWeather] = useState(null);
   const [forecast, setForecast] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  // ✅ NEW STATES FOR SUGGESTIONS
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
 
   const getWeatherIcon = (main) => {
     if (main === "Clear") return clearIcon;
@@ -35,10 +40,31 @@ const App = () => {
     else return clearIcon;
   };
 
+  // ✅ FETCH SUGGESTIONS (Geocoding API)
+  const fetchSuggestions = async (query) => {
+    if (!query) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `https://api.openweathermap.org/geo/1.0/direct?q=${query}&limit=5&appid=${API_KEY}`
+      );
+
+      const data = await res.json();
+      setSuggestions(data);
+      setShowSuggestions(true);
+    } catch (error) {
+      console.log("Suggestion error", error);
+    }
+  };
+
   const fetchWeather = async () => {
     try {
       setLoading(true);
       setError("");
+      setShowSuggestions(false);
 
       const currentRes = await fetch(
         `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
@@ -69,6 +95,20 @@ const App = () => {
     } finally {
       setLoading(false);
     }
+
+    useEffect(() => {
+  const handleClickOutside = (event) => {
+    if (searchRef.current && !searchRef.current.contains(event.target)) {
+      setShowSuggestions(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
   };
 
   return (
@@ -77,18 +117,43 @@ const App = () => {
         <h1>Weather Forecast</h1>
 
         {/* Search */}
-        <div className="search-bar">
+        <div className="search-bar" ref={searchRef}>
           <input
             type="text"
             value={city}
-            onChange={(e) => setCity(e.target.value)}
+            onChange={(e) => {
+              setCity(e.target.value);
+              fetchSuggestions(e.target.value);
+            }}
+            onFocus={() => city && setShowSuggestions(true)}
             placeholder="Search city..."
             className="search-input"
             onKeyDown={(e) => e.key === "Enter" && fetchWeather()}
           />
+
           <button className="search-button" onClick={fetchWeather}>
             <img src={searchIcon} alt="search" />
           </button>
+
+          {/* ✅ Suggestions Dropdown */}
+          {showSuggestions && suggestions.length > 0 && (
+            <div className="suggestions">
+              {suggestions.map((item, index) => (
+                <div
+                  key={index}
+                  className="suggestion-item"
+                  onClick={() => {
+                    setCity(`${item.name}, ${item.country}`);
+                    setShowSuggestions(false);
+                    setTimeout(fetchWeather, 100);
+                  }}
+                >
+                  {item.name}
+                  {item.state ? `, ${item.state}` : ""}, {item.country}
+                </div>
+              ))}
+            </div>
+          )}
         </div>
 
         {loading && <p className="loading">Loading...</p>}
@@ -96,7 +161,6 @@ const App = () => {
 
         {weather && !loading && (
           <>
-            {/* Current Weather */}
             <div className="current-weather">
               <div className="weather-info">
                 <img src={getWeatherIcon(weather.weather[0].main)} alt="weather" />
@@ -124,13 +188,14 @@ const App = () => {
                 <div className="stat">
                   <p>Min / Max</p>
                   <h3>
-                    {Math.round(weather.main.temp_min)}°C / {Math.round(weather.main.temp_max)}°C
+                    {Math.round(weather.main.temp_min)}°C /{" "}
+                    {Math.round(weather.main.temp_max)}°C
                   </h3>
                 </div>
               </div>
             </div>
 
-            {/* 7 Day Forecast */}
+            {/* Forecast */}
             <div className="forecast">
               {forecast.map((item, index) => (
                 <div key={index} className="forecast-card">
